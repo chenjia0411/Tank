@@ -9,16 +9,15 @@ package com.msb.tank;
 public class Main {
     //main方法，程序的入口：
     public static void main(String[] args) {
-        TankFrame tf=new TankFrame();
 
-        tf.setVisible(true);
+        TankFrame.INSTANCE.setVisible(true);
         for (;;){
             try {
                 Thread.sleep(25);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            tf.repaint();
+            TankFrame.INSTANCE.repaint();
         }
     }
 
