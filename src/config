@@ -1,3 +1,7 @@
+#key-value pair
 initTankCount=5
 GAME_WIDTH=800
 GAME_HEIGHT=600
+
+#tank fire strategy
+tankFireStrategy=DefaultFireStrategy

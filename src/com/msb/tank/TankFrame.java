@@ -33,7 +33,7 @@ public class TankFrame extends Frame {
     private TankFrame() {
         this.setTitle("tank war");
         this.setLocation(400, 100);
-        this.setSize(GAME_WIDTH,GAME_WIDTH);
+        this.setSize(GAME_WIDTH,GAME_HEIGHT);
         this.addKeyListener(new TankKeyListener());
         initGameObjiects(); //初始化物体
     }

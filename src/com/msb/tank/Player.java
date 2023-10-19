@@ -1,6 +1,9 @@
 package com.msb.tank;
 
 
+import com.msb.strategy.FireStrategy;
+import com.msb.strategy.FourDirFireStrategy;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
@@ -12,20 +15,21 @@ import java.awt.event.KeyEvent;
  * @version: 1.0
  */
 public class Player {
-    public static final int SPEED=5;
-    private int x,y;
-    private boolean bL,bU,bR,bD;
+    public static final int SPEED = 5;
+    private int x, y;
+    private boolean bL, bU, bR, bD;
     private Dir dir;
     private boolean moving;
     private Group group;
     private boolean live = true;
 
-    public Player(int x, int y , Dir dir, Group group) {
+    public Player(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
-        this.dir=dir;
-        this.group=group;
+        this.dir = dir;
+        this.group = group;
 
+        this.initFireStrategy();//初始化子弹
     }
 
     public Player(int x, int y) {
@@ -36,7 +40,21 @@ public class Player {
     public Player() {
     }
 
+    public Group getGroup() {
+        return group;
+    }
 
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Dir getDir() {
+        return dir;
+    }
+
+    public void setDir(Dir dir) {
+        this.dir = dir;
+    }
 
     public boolean isLive() {
         return live;
@@ -63,39 +81,38 @@ public class Player {
     }
 
     public void paint(Graphics g) {
-        switch (dir){
+        switch (dir) {
             case L:
-                g.drawImage(ResourceMgr.goodTankL,x,y,null);
+                g.drawImage(ResourceMgr.goodTankL, x, y, null);
                 break;
             case R:
-                g.drawImage(ResourceMgr.goodTankR,x,y,null);
+                g.drawImage(ResourceMgr.goodTankR, x, y, null);
                 break;
             case U:
-                g.drawImage(ResourceMgr.goodTankU,x,y,null);
+                g.drawImage(ResourceMgr.goodTankU, x, y, null);
                 break;
             case D:
-                g.drawImage(ResourceMgr.goodTankD,x,y,null);
+                g.drawImage(ResourceMgr.goodTankD, x, y, null);
                 break;
         }
         move();
     }
 
 
-
     public void keyPressed(KeyEvent e) {
-        int key=e.getKeyCode();
-        switch (key){
+        int key = e.getKeyCode();
+        switch (key) {
             case KeyEvent.VK_LEFT:
-                bL=true;
+                bL = true;
                 break;
             case KeyEvent.VK_UP:
-                bU=true;
+                bU = true;
                 break;
             case KeyEvent.VK_RIGHT:
-                bR=true;
+                bR = true;
                 break;
             case KeyEvent.VK_DOWN:
-                bD=true;
+                bD = true;
                 break;
         }
         serMainDir(); //按下键盘时判断键盘状态
@@ -103,51 +120,50 @@ public class Player {
     }
 
     private void serMainDir() {
-        if (!bL && !bU && !bR && !bD){
+        if (!bL && !bU && !bR && !bD) {
             moving = false;
-        }else {
+        } else {
             moving = true;
         }
-        if (bL && !bU && !bR && !bD){
-            dir=Dir.L;
+        if (bL && !bU && !bR && !bD) {
+            dir = Dir.L;
         }
-        if (!bL && bU && !bR && !bD){
-            dir=Dir.U;
+        if (!bL && bU && !bR && !bD) {
+            dir = Dir.U;
         }
-        if (!bL && !bU && bR && !bD){
-            dir=Dir.R;
+        if (!bL && !bU && bR && !bD) {
+            dir = Dir.R;
         }
-        if (!bL && !bU && !bR && bD){
-            dir=Dir.D;
+        if (!bL && !bU && !bR && bD) {
+            dir = Dir.D;
         }
-
 
 
     }
 
     private void move() {
-        if (!moving){
+        if (!moving) {
             return;
         }
-        switch (dir){
+        switch (dir) {
             case L:
-                x -=SPEED;
+                x -= SPEED;
                 break;
             case U:
-                y -=SPEED;
+                y -= SPEED;
                 break;
             case R:
-                x +=SPEED;
+                x += SPEED;
                 break;
             case D:
-                y +=SPEED;
+                y += SPEED;
                 break;
         }
     }
 
     public void keyReleased(KeyEvent e) {
-        int ker =e.getKeyCode();
-        switch (ker){
+        int ker = e.getKeyCode();
+        switch (ker) {
             case KeyEvent.VK_LEFT:
                 bL = false;
                 break;
@@ -167,10 +183,24 @@ public class Player {
         serMainDir(); //松开键盘时判断键盘状态
     }
 
-    private void fire() {
-        int bx =x+ResourceMgr.goodTankU.getWidth()/2-ResourceMgr.bulletU.getWidth()/2;
-        int by=y+ResourceMgr.goodTankU.getHeight()/2-ResourceMgr.bulletU.getHeight()/2;
-        TankFrame.INSTANCE.add(new Bullet(bx,by,dir,group));
+        //初始化子弹接口
+    FireStrategy fireStrategy =null;
+
+    private void initFireStrategy(){
+        ClassLoader classLoader = Player.class.getClassLoader();
+        String className =PropertyMgr.get("tankFireStrategy"); //得到子弹的类
+        try {
+            Class aClass = classLoader.loadClass("com.msb.strategy." + className);  //第一种方法
+            //Class aClass = Class.forName("com.msb.strategy." + className); //第二种方法
+            fireStrategy= (FireStrategy) aClass.getDeclaredConstructor().newInstance(); //得到子弹对象
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void fire() { //发射子弹
+        fireStrategy.fire(this);
     }
 
     public void die() {
