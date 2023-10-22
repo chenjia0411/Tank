@@ -1,8 +1,11 @@
 package com.msb.tank;
 
 
+import com.msb.abstracts.AbstractGameObject;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.BitSet;
 import java.util.Random;
 
 
@@ -12,7 +15,7 @@ import java.util.Random;
  * @Description: PACKAGE_NAME
  * @version: 1.0
  */
-public class Tank {
+public class Tank extends AbstractGameObject {//敌人坦克
     public static final int SPEED = 5;
     private int x, y;
     private boolean bL, bU, bR, bD;
@@ -23,6 +26,7 @@ public class Tank {
     private Random r = new Random();
     private int width,height;
     private int oldx,oldy;
+    private Rectangle rect;
 
     public Tank(int x, int y, Dir dir, Group group) {
         this.x = x;
@@ -31,6 +35,8 @@ public class Tank {
         this.group = group;
         width =TankFrame.GAME_WIDTH-ResourceMgr.badTankD.getWidth();
         height=TankFrame.GAME_HEIGHT-ResourceMgr.badTankU.getHeight();
+
+        this.rect =new Rectangle(x,y,ResourceMgr.badTankD.getWidth(),ResourceMgr.badTankU.getHeight());
     }
 
     public Tank(int x, int y) {
@@ -93,6 +99,14 @@ public class Tank {
         }
 
         move();
+        //更新坦克图片位置
+        rect.x=x;
+        rect.y=y;
+    }
+
+    @Override
+    public boolean islive() {
+        return live;
     }
 
     private void move() {
@@ -126,19 +140,27 @@ public class Tank {
 
     private void boundsCheck() {
         if (x < 0 || y < 30 || x > width || y > height) {  //出了边界回到原来的位置
-           x=oldx;
-           y=oldy;
+          this.back();
         }
+    }
+
+    public void back() {
+        x=oldx;
+        y=oldy;
     }
 
     private void fire() {
         int bx = x + ResourceMgr.goodTankU.getWidth() / 2 - ResourceMgr.bulletU.getWidth() / 2;
         int by = y + ResourceMgr.goodTankU.getHeight() / 2 - ResourceMgr.bulletU.getHeight() / 2;
-        TankFrame.INSTANCE.add1(new Bullet(bx, by, dir, group));
+        TankFrame.INSTANCE.add(new Bullet(bx, by, dir, group));
     }
 
     public void die() {
         this.setLive(false);
         TankFrame.INSTANCE.add(new Explode(x,y));
+    }
+
+    public Rectangle getRect() {
+        return rect;
     }
 }

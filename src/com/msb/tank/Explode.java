@@ -1,5 +1,7 @@
 package com.msb.tank;
 
+import com.msb.abstracts.AbstractGameObject;
+
 import java.awt.*;
 
 /**
@@ -8,7 +10,7 @@ import java.awt.*;
  * @Description: PACKAGE_NAME
  * @version: 1.0
  */
-public class Explode {  //爆炸效果添加
+public class Explode extends AbstractGameObject {  //爆炸效果添加
     private int x,y;
    // private int width,height;
     private int step=0; //记录爆炸的帧数
@@ -45,5 +47,10 @@ public class Explode {  //爆炸效果添加
              step=0;//播完最后一张爆炸图片，爆炸动画消失
         }
 
+    }
+
+    @Override
+    public boolean islive() {
+        return live;
     }
 }

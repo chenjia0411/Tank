@@ -1,5 +1,7 @@
 package com.msb.tank;
 
+import com.msb.abstracts.AbstractGameObject;
+
 import java.awt.*;
 
 /**
@@ -8,25 +10,36 @@ import java.awt.*;
  * @Description: com.msb.tank
  * @version: 1.0
  */
-public class Bullet {
-    public static final int SPEED=5;
-    private int x,y;
+public class Bullet extends AbstractGameObject {
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public static final int SPEED = 5;
+    Rectangle rect; //子弹方块
+    Rectangle recttank; //坦克方块
+    private int x, y;
+    private int w = ResourceMgr.bulletU.getWidth();//子弹的宽度
+    private int h = ResourceMgr.bulletU.getHeight();//子弹的高度
     private Dir dir;
     private Group group;
-    private boolean live=true;
+    private boolean live = true;
+
 
     public Bullet(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
-        this.group=group;
+        this.group = group;
+        rect = new Rectangle(x, y, w, h);
+        recttank = new Rectangle();
     }
 
     public Bullet() {
-    }
-
-    public boolean isLive() {
-        return live;
     }
 
     public void setLive(boolean live) {
@@ -34,65 +47,71 @@ public class Bullet {
     }
 
     public void paint(Graphics g) {
-            switch (dir){
-                case L:
-                    g.drawImage(ResourceMgr.bulletL,x,y,null);
-                    break;
-                case R:
-                    g.drawImage(ResourceMgr.bulletR,x,y,null);
-                    break;
-                case U:
-                    g.drawImage(ResourceMgr.bulletU,x,y,null);
-                    break;
-                case D:
-                    g.drawImage(ResourceMgr.bulletD,x,y,null);
-                    break;
-            }
+        if (!live) {
+            return;
+        }
+        switch (dir) {
+            case L:
+                g.drawImage(ResourceMgr.bulletL, x, y, null);
+                break;
+            case R:
+                g.drawImage(ResourceMgr.bulletR, x, y, null);
+                break;
+            case U:
+                g.drawImage(ResourceMgr.bulletU, x, y, null);
+                break;
+            case D:
+                g.drawImage(ResourceMgr.bulletD, x, y, null);
+                break;
+        }
 
         move();
     }
 
+    @Override
+    public boolean islive() {
+        return live;
+    }
+
+
     private void move() {
-        switch (dir){
+        switch (dir) {
             case L:
-                x -=SPEED;
+                x -= SPEED;
                 break;
             case U:
-                y -=SPEED;
+                y -= SPEED;
                 break;
             case R:
-                x +=SPEED;
+                x += SPEED;
                 break;
             case D:
-                y +=SPEED;
+                y += SPEED;
                 break;
         }
 
         boundsCheck();          //判断子弹是否飞出边界
+        //移动子弹方块
+        rect.x = x;
+        rect.y = y;
+    }
+
+
+    public void collidesWithTank(Tank tank) {  //碰撞
 
     }
 
-    public void collidesWithTank(Tank tank) {
-        if (!tank.isLive()){return;}
-        if(this.group==tank.getGroup()){return;}
-        //把子弹和坦克变为两个方块
-        Rectangle   rect=new Rectangle(x,y,ResourceMgr.bulletU.getWidth(),ResourceMgr.bulletU.getHeight());//子弹的方块
-        Rectangle   recttank=new Rectangle(tank.getX(),tank.getY(),
-                ResourceMgr.badTankU.getWidth(),ResourceMgr.badTankU.getHeight());       //坦克的方块
-
-        //判断方块是否相交
-        if(rect.intersects(recttank)){
-            this.die();   //相交子弹消失
-            tank.die();   //相交坦克死亡
-        }
+    public Rectangle getRect() {
+        return rect;
     }
 
     private void boundsCheck() {
-        if(x<0 || y<30 || x>TankFrame.GAME_WIDTH || y>TankFrame.GAME_HEIGHT){
-            live=false;
+        if (x < 0 || y < 30 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) {
+            live = false;
         }
     }
-    public void die(){
+
+    public void die() {
         this.setLive(false);
     }
 }

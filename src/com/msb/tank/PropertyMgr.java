@@ -9,7 +9,7 @@ import java.util.Properties;
  * @Description: com.msb.tank
  * @version: 1.0
  */
-public class PropertyMgr {
+public class PropertyMgr { //引用配置文件
     private static Properties properties =new Properties();
 
     static {

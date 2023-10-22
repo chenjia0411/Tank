@@ -1,6 +1,7 @@
 package com.msb.tank;
 
 
+import com.msb.abstracts.AbstractGameObject;
 import com.msb.strategy.FireStrategy;
 import com.msb.strategy.FourDirFireStrategy;
 
@@ -14,8 +15,10 @@ import java.awt.event.KeyEvent;
  * @Description: PACKAGE_NAME
  * @version: 1.0
  */
-public class Player {
+public class Player extends AbstractGameObject { //玩家
     public static final int SPEED = 5;
+    //初始化子弹接口
+    FireStrategy fireStrategy = null;
     private int x, y;
     private boolean bL, bU, bR, bD;
     private Dir dir;
@@ -98,6 +101,10 @@ public class Player {
         move();
     }
 
+    @Override
+    public boolean islive() {
+        return live;
+    }
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
@@ -183,16 +190,13 @@ public class Player {
         serMainDir(); //松开键盘时判断键盘状态
     }
 
-        //初始化子弹接口
-    FireStrategy fireStrategy =null;
-
-    private void initFireStrategy(){
+    private void initFireStrategy() {
         ClassLoader classLoader = Player.class.getClassLoader();
-        String className =PropertyMgr.get("tankFireStrategy"); //得到子弹的类
+        String className = PropertyMgr.get("tankFireStrategy"); //得到子弹的类
         try {
             Class aClass = classLoader.loadClass("com.msb.strategy." + className);  //第一种方法
             //Class aClass = Class.forName("com.msb.strategy." + className); //第二种方法
-            fireStrategy= (FireStrategy) aClass.getDeclaredConstructor().newInstance(); //得到子弹对象
+            fireStrategy = (FireStrategy) aClass.getDeclaredConstructor().newInstance(); //得到子弹对象
 
         } catch (Exception e) {
             e.printStackTrace();

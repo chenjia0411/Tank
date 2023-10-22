@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 
 
 
-public class ImageUtil {
+public class ImageUtil { //坦克图片翻转
     public static BufferedImage rotateImage(final BufferedImage bufferedimage,
                                             final int degree) {
         int w = bufferedimage.getWidth();
