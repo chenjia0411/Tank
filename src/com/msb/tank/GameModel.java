@@ -4,6 +4,7 @@ import com.msb.abstracts.AbstractGameObject;
 import com.msb.chainofresponsibility.ColliderChain;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,7 +15,7 @@ import java.util.Random;
  * @Description: com.msb.tank
  * @version: 1.0
  */
-public class GameModel {
+public class GameModel implements Serializable {
     private Player myTank;  //玩家
     private List<AbstractGameObject> objects; //物体集合
     private ColliderChain collider; //碰撞器
@@ -52,11 +53,15 @@ public class GameModel {
         g.drawString("objects"+objects.size(),10,50);
         g.setColor(color);
         myTank.paint(g);
+
         for (int i = 0; i < objects.size(); i++) {
             if (!objects.get(i).islive()) {
                 objects.remove(i);
-                break;
+
             }
+        }
+        for (int i = 0; i < objects.size(); i++) {
+
             AbstractGameObject go1 = objects.get(i);
             for (int j = 0; j < objects.size(); j++) {
                 AbstractGameObject go2 = objects.get(j);

@@ -3,6 +3,7 @@ package com.msb.tank;
 import com.msb.abstracts.AbstractGameObject;
 
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * @Auther: chenjia
@@ -10,7 +11,7 @@ import java.awt.*;
  * @Description: com.msb.tank
  * @version: 1.0
  */
-public class Bullet extends AbstractGameObject {
+public class Bullet extends AbstractGameObject  {
     public Group getGroup() {
         return group;
     }

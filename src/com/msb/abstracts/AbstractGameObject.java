@@ -1,6 +1,7 @@
 package com.msb.abstracts;
 
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * @Auther: chenjia
@@ -8,7 +9,7 @@ import java.awt.*;
  * @Description: com.msb.abstracts
  * @version: 1.0
  */
-public abstract class AbstractGameObject { //游戏物体的抽象方法
+public abstract class AbstractGameObject implements Serializable { //游戏物体的抽象方法
 
 
     public abstract void paint(Graphics p);

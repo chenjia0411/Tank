@@ -5,6 +5,7 @@ import com.msb.abstracts.AbstractGameObject;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Random;
 
@@ -15,7 +16,7 @@ import java.util.Random;
  * @Description: PACKAGE_NAME
  * @version: 1.0
  */
-public class Tank extends AbstractGameObject {//敌人坦克
+public class Tank extends AbstractGameObject  {//敌人坦克
     public static final int SPEED = 5;
     private int x, y;
     private boolean bL, bU, bR, bD;

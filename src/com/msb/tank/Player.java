@@ -7,6 +7,7 @@ import com.msb.strategy.FourDirFireStrategy;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 
 
 /**
@@ -15,7 +16,7 @@ import java.awt.event.KeyEvent;
  * @Description: PACKAGE_NAME
  * @version: 1.0
  */
-public class Player extends AbstractGameObject { //玩家
+public class Player extends AbstractGameObject implements Serializable { //玩家
     public static final int SPEED = 5;
     //初始化子弹接口
     FireStrategy fireStrategy = null;

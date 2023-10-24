@@ -6,6 +6,7 @@ import com.msb.abstracts.AbstractGameObject;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.*;
 
 
 /**
@@ -57,7 +58,54 @@ public class TankFrame extends Frame {
 
         @Override
         public void keyPressed(KeyEvent e) { //按下键盘
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_S){  //按下s键保持
+              save();
+            }else if (key==KeyEvent.VK_L){
+                load();
+            }
+                else {
             gm.getMyTank().keyPressed(e);
+            }
+        }
+
+        private void save()  {
+            File f=new File("tanksave.dat");
+            ObjectOutputStream oos = null;
+            try {
+                FileOutputStream fos = new FileOutputStream(f);
+                oos=new ObjectOutputStream(fos);
+                oos.writeObject(gm);
+                oos.flush();
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                try {
+                    if (oos!=null)
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        private void load() {
+            File f =new File("tanksave.dat");
+            ObjectInputStream ois =null;
+            try {
+                FileInputStream fis = new FileInputStream(f);
+                ois = new ObjectInputStream(fis);
+                gm = (GameModel) ois.readObject();
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override
