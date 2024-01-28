@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @Auther: chenjia
@@ -27,7 +28,10 @@ public class GameModel implements Serializable {
     }
 
     private void initGameObjiects() {
-        myTank = new Player(100, 100, Dir.R, Group.GOOD);  //初始化玩家坦克
+
+        myTank = new Player(50+r.nextInt(700), 50 +r.nextInt(500),
+                                Dir.values()[r.nextInt(Dir.values().length)],
+                                Group.values()[r.nextInt(Group.values().length)]);  //初始化玩家坦克
 
         objects = new ArrayList<>(); //初始化游戏物体
         int tankCount = Integer.parseInt(PropertyMgr.get("initTankCount"));  //在配置文件中得到敌人数量
@@ -88,5 +92,17 @@ public class GameModel implements Serializable {
     public void setMyTank(Player myTank) {
         this.myTank = myTank;
     }
+
+    public Tank findTankByUUID(UUID id) {
+        for (AbstractGameObject o: objects){
+            if ( o instanceof Tank){
+                Tank t= (Tank) o;
+                if (id.equals(t.getId())) return t; //有则返回true，否则false
+            }
+        }
+        return null;
+    }
+
+
 
 }

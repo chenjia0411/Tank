@@ -2,12 +2,14 @@ package com.msb.tank;
 
 
 import com.msb.abstracts.AbstractGameObject;
+import com.msb.net.TankJoinMsg;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Random;
+import java.util.UUID;
 
 
 /**
@@ -21,7 +23,7 @@ public class Tank extends AbstractGameObject  {//敌人坦克
     private int x, y;
     private boolean bL, bU, bR, bD;
     private Dir dir;
-   // private boolean moving = true;
+    private boolean moving = true;
     private Group group;
     private boolean live = true; //坦克是否存活
     private Random r = new Random();
@@ -29,11 +31,24 @@ public class Tank extends AbstractGameObject  {//敌人坦克
     private int oldx,oldy;
     private Rectangle rect;
 
+    private UUID id ;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public Tank(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
+
+        oldx =x;
+        oldy =y;
         width =TankFrame.GAME_WIDTH-ResourceMgr.badTankD.getWidth();
         height=TankFrame.GAME_HEIGHT-ResourceMgr.badTankU.getHeight();
 
@@ -46,6 +61,23 @@ public class Tank extends AbstractGameObject  {//敌人坦克
     }
 
     public Tank() {
+    }
+
+    public Tank(TankJoinMsg msg) {
+        this.x =msg.getX();
+        this.y = msg.getY();
+        this.dir =msg.getDir();
+        this.moving =msg.isMoving();
+        this.group =msg.getGroup();
+        this.id =msg.getId();
+
+        oldx =x;
+        oldy =y;
+        width =TankFrame.GAME_WIDTH-ResourceMgr.badTankD.getWidth();
+        height=TankFrame.GAME_HEIGHT-ResourceMgr.badTankU.getHeight();
+
+        this.rect =new Rectangle(x,y,ResourceMgr.badTankD.getWidth(),ResourceMgr.badTankU.getHeight());
+
     }
 
     public Group getGroup() {
@@ -86,20 +118,20 @@ public class Tank extends AbstractGameObject  {//敌人坦克
         }
         switch (dir) {
             case L:
-                g.drawImage(ResourceMgr.badTankL, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankL:ResourceMgr.goodTankL, x, y, null);
                 break;
             case R:
-                g.drawImage(ResourceMgr.badTankR, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankR:ResourceMgr.goodTankR, x, y, null);
                 break;
             case U:
-                g.drawImage(ResourceMgr.badTankU, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankU:ResourceMgr.goodTankU, x, y, null);
                 break;
             case D:
-                g.drawImage(ResourceMgr.badTankD, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankD:ResourceMgr.goodTankD, x, y, null);
                 break;
         }
 
-        move();
+       // move();
         //更新坦克图片位置
         rect.x=x;
         rect.y=y;

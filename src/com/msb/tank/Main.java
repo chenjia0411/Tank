@@ -1,5 +1,7 @@
 package com.msb.tank;
 
+import com.msb.net.Client;
+
 /**
  * @Auther: chenjia
  * @Date: 2023/10/5 - 10 - 05 - 21:32
@@ -11,14 +13,19 @@ public class Main {
     public static void main(String[] args) {
 
         TankFrame.INSTANCE.setVisible(true);
-        for (;;){
+
+        new Thread(()->{   for (;;){
             try {
                 Thread.sleep(25);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             TankFrame.INSTANCE.repaint();
-        }
+
+        }}).start();
+
+        Client.INSTANCE.connect();
+
     }
 
 }

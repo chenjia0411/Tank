@@ -3,11 +3,11 @@ package com.msb.tank;
 
 import com.msb.abstracts.AbstractGameObject;
 import com.msb.strategy.FireStrategy;
-import com.msb.strategy.FourDirFireStrategy;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
+import java.util.UUID;
 
 
 /**
@@ -26,6 +26,7 @@ public class Player extends AbstractGameObject implements Serializable { //玩�
     private boolean moving;
     private Group group;
     private boolean live = true;
+    private UUID id = UUID.randomUUID(); //给玩家一个id，有很小机率重复
 
     public Player(int x, int y, Dir dir, Group group) {
         this.x = x;
@@ -42,6 +43,62 @@ public class Player extends AbstractGameObject implements Serializable { //玩�
     }
 
     public Player() {
+    }
+
+    public FireStrategy getFireStrategy() {
+        return fireStrategy;
+    }
+
+    public void setFireStrategy(FireStrategy fireStrategy) {
+        this.fireStrategy = fireStrategy;
+    }
+
+    public boolean isbL() {
+        return bL;
+    }
+
+    public void setbL(boolean bL) {
+        this.bL = bL;
+    }
+
+    public boolean isbU() {
+        return bU;
+    }
+
+    public void setbU(boolean bU) {
+        this.bU = bU;
+    }
+
+    public boolean isbR() {
+        return bR;
+    }
+
+    public void setbR(boolean bR) {
+        this.bR = bR;
+    }
+
+    public boolean isbD() {
+        return bD;
+    }
+
+    public void setbD(boolean bD) {
+        this.bD = bD;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public Group getGroup() {
@@ -85,18 +142,25 @@ public class Player extends AbstractGameObject implements Serializable { //玩�
     }
 
     public void paint(Graphics g) {
+        if (!this.isLive()) return; //死了返回
+
+        Color c =g.getColor();
+        g.setColor(Color.yellow);
+        g.drawString(id.toString(),x, y-10);
+        g.setColor(c);
+
         switch (dir) {
             case L:
-                g.drawImage(ResourceMgr.goodTankL, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankL:ResourceMgr.goodTankL, x, y, null);
                 break;
             case R:
-                g.drawImage(ResourceMgr.goodTankR, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankR:ResourceMgr.goodTankR, x, y, null);
                 break;
             case U:
-                g.drawImage(ResourceMgr.goodTankU, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankU:ResourceMgr.goodTankU, x, y, null);
                 break;
             case D:
-                g.drawImage(ResourceMgr.goodTankD, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankD:ResourceMgr.goodTankD, x, y, null);
                 break;
         }
         move();
