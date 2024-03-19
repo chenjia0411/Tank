@@ -2,6 +2,9 @@ package com.msb.tank;
 
 
 import com.msb.abstracts.AbstractGameObject;
+import com.msb.net.Client;
+import com.msb.net.TankMoveOrChangMsg;
+import com.msb.net.TankStopMsg;
 import com.msb.strategy.FireStrategy;
 
 import java.awt.*;
@@ -187,30 +190,37 @@ public class Player extends AbstractGameObject implements Serializable { //玩�
                 bD = true;
                 break;
         }
-        serMainDir(); //按下键盘时判断键盘状态
+        setMainDir(); //按下键盘时判断键盘状态
 
     }
 
-    private void serMainDir() {
+    private void setMainDir() {
+
+        boolean oldMoving = moving;
+        Dir oldDir = dir;
         if (!bL && !bU && !bR && !bD) {
             moving = false;
+            Client.INSTANCE.send(new TankStopMsg(this.id, this.x, this.y));
         } else {
             moving = true;
+            if (bL && !bU && !bR && !bD) {
+                dir = Dir.L;
+            }
+            if (!bL && bU && !bR && !bD) {
+                dir = Dir.U;
+            }
+            if (!bL && !bU && bR && !bD) {
+                dir = Dir.R;
+            }
+            if (!bL && !bU && !bR && bD) {
+                dir = Dir.D;
+            }
+            //从禁止状态改变成移动状态，发消息。
+            if (!oldMoving) //判断原来是什么状态
+                Client.INSTANCE.send(new TankMoveOrChangMsg(this.id, this.x, this.y, this.dir));
+            if (!oldDir.equals(dir))
+                Client.INSTANCE.send(new TankMoveOrChangMsg(this.id, this.x, this.y, this.dir));
         }
-        if (bL && !bU && !bR && !bD) {
-            dir = Dir.L;
-        }
-        if (!bL && bU && !bR && !bD) {
-            dir = Dir.U;
-        }
-        if (!bL && !bU && bR && !bD) {
-            dir = Dir.R;
-        }
-        if (!bL && !bU && !bR && bD) {
-            dir = Dir.D;
-        }
-
-
     }
 
     private void move() {
@@ -252,7 +262,7 @@ public class Player extends AbstractGameObject implements Serializable { //玩�
                 fire();
                 break;
         }
-        serMainDir(); //松开键盘时判断键盘状态
+        setMainDir(); //松开键盘时判断键盘状态
     }
 
     private void initFireStrategy() {
@@ -274,5 +284,6 @@ public class Player extends AbstractGameObject implements Serializable { //玩�
 
     public void die() {
         this.setLive(false);
+        TankFrame.INSTANCE.getGm().add(new Explode(x,y));
     }
 }

@@ -17,6 +17,6 @@ public class FourDirFireStrategy implements FireStrategy{
 
         Dir[] dirs =Dir.values();
         for (Dir dir:dirs)
-        TankFrame.INSTANCE.getGm().add(new Bullet(bx,by,dir,p.getGroup()));
+        TankFrame.INSTANCE.getGm().add(new Bullet(p.getId(),bx,by,dir,p.getGroup()));
     } ///发射四个方向的子弹
 }

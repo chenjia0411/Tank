@@ -11,7 +11,7 @@ import java.util.UUID;
  * @Description: com.msb.net
  * @version: 1.0
  */
-public class TankJoinMsg {  //坦克加入的信息
+public class TankJoinMsg extends Msg{  //坦克加入的信息
     private int x, y;
     private Dir dir;
     private boolean moving;
@@ -78,6 +78,13 @@ public class TankJoinMsg {  //坦克加入的信息
             }
         }
         return bytes;
+    }
+
+
+
+    @Override
+    public MsgType getMsgType() {
+        return MsgType.TankJoin;
     }
 
     public void parse(byte[] bytes) {
@@ -150,12 +157,12 @@ public class TankJoinMsg {  //坦克加入的信息
         this.id = id;
     }
 
-    public void handle(TankJoinMsg msg) {
+    public void handle() {
         //如果是自己的消息就不进行处理
         if(this.id.equals(TankFrame.INSTANCE.getGm().getMyTank().getId()))  return;
         if(TankFrame.INSTANCE.getGm().findTankByUUID(this.id) != null) return; //判断游戏物体集合中有没有这个坦克
         //加入这个坦克
-        Tank t = new Tank(msg);
+        Tank t = new Tank(this);
         TankFrame.INSTANCE.getGm().add(t);//添加到物体中
 
         //新加入一个物体之后，把自己信息发送给服务器，目的是让后面的客户端得到自己的坦克信息

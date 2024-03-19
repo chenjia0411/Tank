@@ -1,6 +1,8 @@
 package com.msb.chainofresponsibility;
 
 import com.msb.abstracts.AbstractGameObject;
+import com.msb.net.Client;
+import com.msb.net.TankDieMsg;
 import com.msb.tank.Bullet;
 import com.msb.tank.Tank;
 
@@ -31,6 +33,7 @@ public class BulletTankCollider implements Collider {
             if (b.getRect().intersects(recttank)) {
                 b.die();   //相交子弹消失
                 t.die();   //相交坦克死亡
+                Client.INSTANCE.send(new TankDieMsg(t.getId(),b.getId()));
                 return false;
             }
         } else if (go1 instanceof Tank && go2 instanceof Bullet) {

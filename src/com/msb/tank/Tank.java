@@ -2,6 +2,8 @@ package com.msb.tank;
 
 
 import com.msb.abstracts.AbstractGameObject;
+import com.msb.net.Client;
+import com.msb.net.TankDieMsg;
 import com.msb.net.TankJoinMsg;
 
 import java.awt.*;
@@ -22,6 +24,15 @@ public class Tank extends AbstractGameObject  {//敌人坦克
     public static final int SPEED = 5;
     private int x, y;
     private boolean bL, bU, bR, bD;
+
+    public Dir getDir() {
+        return dir;
+    }
+
+    public void setDir(Dir dir) {
+        this.dir = dir;
+    }
+
     private Dir dir;
     private boolean moving = true;
     private Group group;
@@ -30,6 +41,14 @@ public class Tank extends AbstractGameObject  {//敌人坦克
     private int width,height;
     private int oldx,oldy;
     private Rectangle rect;
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
 
     private UUID id ;
 
@@ -131,7 +150,7 @@ public class Tank extends AbstractGameObject  {//敌人坦克
                 break;
         }
 
-       // move();
+        move();
         //更新坦克图片位置
         rect.x=x;
         rect.y=y;
@@ -143,6 +162,7 @@ public class Tank extends AbstractGameObject  {//敌人坦克
     }
 
     private void move() {
+        if(!moving) return;
         //保留上一个位置
         this.oldx=x;
         this.oldy=y;
@@ -161,8 +181,8 @@ public class Tank extends AbstractGameObject  {//敌人坦克
                 break;
         }
         boundsCheck(); //检查坦克是否出了边界
-        randomDir();//坦克随机移动方向
-        if (r.nextInt(100) > 90) fire(); //坦克开火
+       // randomDir();//坦克随机移动方向
+       // if (r.nextInt(100) > 90) fire(); //坦克开火
     }
 
     public void randomDir() {
@@ -185,7 +205,7 @@ public class Tank extends AbstractGameObject  {//敌人坦克
     private void fire() {
         int bx = x + ResourceMgr.goodTankU.getWidth() / 2 - ResourceMgr.bulletU.getWidth() / 2;
         int by = y + ResourceMgr.goodTankU.getHeight() / 2 - ResourceMgr.bulletU.getHeight() / 2;
-        TankFrame.INSTANCE.getGm().add(new Bullet(bx, by, dir, group));
+        TankFrame.INSTANCE.getGm().add(new Bullet(this.id,bx, by, dir, group));
     }
 
     public void die() {

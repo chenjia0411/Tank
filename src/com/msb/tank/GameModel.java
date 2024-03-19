@@ -104,5 +104,13 @@ public class GameModel implements Serializable {
     }
 
 
-
+    public Bullet findBulletByUUID(UUID bulletId) {
+        for (AbstractGameObject o: objects){
+            if ( o instanceof Bullet){
+                Bullet b= (Bullet) o;
+                if (bulletId.equals(b.getId())) return b; //有则返回true，否则false
+            }
+        }
+        return null;
+    }
 }

@@ -1,17 +1,15 @@
 package com.msb.net;
 
 import com.msb.tank.TankFrame;
-import com.nettychat.ClientFrame;
-import com.nettycodec.TankMsg;
-import com.nettycodec.TankMsgEncoder;
+
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.ReferenceCountUtil;
+
+
+import java.util.UUID;
 
 /**
  * @Auther: chenjia
@@ -55,7 +53,7 @@ public class Client {
         }
     }
 
-    public void send(TankJoinMsg msg) {
+    public void send(Msg msg) {
             channel.writeAndFlush(msg);
     }
 
@@ -64,7 +62,9 @@ public class Client {
         channel.close();
     }
 
-    static class MyHandler extends SimpleChannelInboundHandler<TankJoinMsg> {
+
+
+    static class MyHandler extends SimpleChannelInboundHandler<Msg> {
         //SimpleChannelInboundHandler<TankJoinMsg>，只处理 TankJoinMsg 类型的消息。
         //需要实现channelRead0()方法
         @Override
@@ -74,11 +74,11 @@ public class Client {
 
 
         @Override
-        protected void channelRead0(ChannelHandlerContext channelHandlerContext, TankJoinMsg msg) throws Exception {
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
             //接收服务端传来的消息
             //已经帮我们把消息进行类型的转换
             System.out.println(msg.toString());
-            msg.handle(msg);
+            msg.handle();
         }
 
 
