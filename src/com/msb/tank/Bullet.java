@@ -4,6 +4,7 @@ import com.msb.abstracts.AbstractGameObject;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * @Auther: chenjia
@@ -29,9 +30,52 @@ public class Bullet extends AbstractGameObject  {
     private Dir dir;
     private Group group;
     private boolean live = true;
+    private UUID  id = UUID.randomUUID();
+    private UUID playerId;
 
 
-    public Bullet(int x, int y, Dir dir, Group group) {
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(UUID playerId) {
+        this.playerId = playerId;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Dir getDir() {
+        return dir;
+    }
+
+    public void setDir(Dir dir) {
+        this.dir = dir;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Bullet(UUID playerId,int x, int y, Dir dir, Group group) {
+        this.playerId =playerId;
         this.x = x;
         this.y = y;
         this.dir = dir;
